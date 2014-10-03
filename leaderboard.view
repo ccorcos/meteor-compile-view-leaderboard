@@ -110,6 +110,7 @@ body {
 Players = new Mongo.Collection("players");
 
 if (Meteor.isClient) {
+  console.log("hello client")
   Template.leaderboard.players = function () {
     return Players.find({}, {sort: {score: -1, name: 1}});
   };
@@ -138,7 +139,9 @@ if (Meteor.isClient) {
 
 // On server startup, create some players if the database is empty.
 if (Meteor.isServer) {
+  console.log("hello server")
   Meteor.startup(function () {
+    console.log("server startup")
     if (Players.find().count() === 0) {
       var names = ["Ada Lovelace",
                    "Grace Hopper",
