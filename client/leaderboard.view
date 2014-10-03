@@ -1,0 +1,102 @@
+!html
+<template name="leaderboard">
+  <div class="leaderboard">
+    !js
+    Template.leaderboard.players = function () {
+      return Players.find({}, {sort: {score: -1, name: 1}});
+    };
+    !html
+    {{#each players}}
+      {{> player}}
+    {{/each}}
+  </div>
+
+  {{#if selected_name}}
+  <div class="details">
+    !css
+    .details, .none {
+        font-weight: bold;
+        font-size: 2em;
+        border-style: dashed none none none;
+        border-color: #ccc;
+        border-width: 4px;
+        margin: 50px 10px;
+        padding: 10px 0;
+    }
+    !js
+    Template.leaderboard.selected_name = function () {
+      var player = Players.findOne(Session.get("selected_player"));
+      return player && player.name;
+    };
+    !html
+    <div class="name">{{selected_name}}</div>
+    !js
+    Template.leaderboard.events({
+      'click button.inc': function () {
+        Players.update(Session.get("selected_player"), {$inc: {score: 5}});
+      }
+    });
+    !html
+    <button class="inc">Give 5 points</button>
+    !css
+    .none {
+        color: #777;
+    }
+    .inc {
+        margin: 5px 0;
+        font-size: 0.6em;
+    }
+    !html
+  </div>
+  {{else}}
+  <div class="none">Click a player to select</div>
+  {{/if}}
+</template>
+
+!js
+Template.player.events({
+  'click': function () {
+    Session.set("selected_player", this._id);
+  }
+});
+!html
+<template name="player">
+  !js
+  Template.player.selected = function () {
+    return Session.equals("selected_player", this._id) ? "selected" : '';
+  };
+  !html
+  <div class="player {{selected}}">
+    !css
+    .player {
+        cursor: pointer;
+        padding: 5px 10px;
+    }
+    .player.selected {
+        background-color: yellow;
+    }
+    !html
+    <span class="name">{{name}}</span>
+    !css
+    .player .name {
+        display: inline-block;
+        width: 70%;
+        font-size: 1.6em;
+    }
+    !html
+    <span class="score">{{score}}</span>
+    !css
+    .player .score {
+        display: inline-block;
+        width: 28%;
+        text-align: right;
+        font-size: 2em;
+        font-weight: bold;
+        color: #777;
+    }
+    .player.selected .score {
+        color: black;
+    }
+    !html
+  </div>
+</template>
