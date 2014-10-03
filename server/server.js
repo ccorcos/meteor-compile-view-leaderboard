@@ -1,5 +1,4 @@
 Meteor.startup(function () {
-  console.log("server startup")
   if (Players.find().count() === 0) {
     var names = ["Ada Lovelace",
                  "Grace Hopper",
